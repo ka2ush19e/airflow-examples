@@ -3,6 +3,7 @@
 from __future__ import absolute_import, print_function, division, unicode_literals
 from airflow import DAG
 from airflow.operators import BranchPythonOperator, DummyOperator
+from airflow.utils import chain
 from datetime import datetime, timedelta
 import random
 
@@ -27,7 +28,7 @@ select = BranchPythonOperator(
     dag=dag
 )
 
-t1.set_downstream(select)
-select.set_downstream(b1)
-select.set_downstream(b2)
-select.set_downstream(b3)
+chain(t1, select)
+chain(select, b1)
+chain(select, b2)
+chain(select, b3)
